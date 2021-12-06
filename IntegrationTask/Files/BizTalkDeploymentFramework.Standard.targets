@@ -1360,7 +1360,7 @@
   <Target Name="UndeployAppDefinition" Condition="'$(SkipUndeploy)' == 'false'" DependsOnTargets="PrepareAppForUndeploy">
      <Message Text="Removing Integration" />
     <!-- Remove BizTalk integration -->
-     <Exec Command="IntegrationTask.exe &quot;Remove&quot; &quot;$(BizTalkAppName)&quot; &quot;$(Integration)&quot;"/>
+     <Exec Command="&quot;$(DeployTools)\IntegrationTask.exe&quot; &quot;Remove&quot; &quot;$(BizTalkAppName)&quot; &quot;$(Integration)&quot;"/>
     <!-- Remove BizTalk application definition -->
     <!--<Exec Command="BTSTask.exe RemoveApp -ApplicationName:&quot;$(BizTalkAppName)&quot;" Condition="'$(AppExists)' == 'true'" ContinueOnError="true"/>-->
   </Target>
@@ -1986,7 +1986,7 @@
     </PropertyGroup>
     <Message Text="Starting integration $(Integration) at $(StartApplicationTime)."/>
 
-    <Exec Command="IntegrationTask.exe &quot;Start&quot; &quot;$(BizTalkAppName)&quot; &quot;$(Integration)&quot; &quot;$(EnableAllReceiveLocationsOnDeploy)&quot;"/>
+    <Exec Command="&quot;$(DeployTools)\IntegrationTask.exe&quot; &quot;Start&quot; &quot;$(BizTalkAppName)&quot; &quot;$(Integration)&quot; &quot;$(EnableAllReceiveLocationsOnDeploy)&quot;"/>
   
     <!--<ControlBizTalkApp ApplicationName="$(BizTalkAppName)" StartOption="$(ControlBizTalkAppStartOption)" />-->
   </Target>
@@ -2000,7 +2000,7 @@
     <Message Text="Stopping Integration" />
 
     <!--Standard modification-->
-    <Exec Command="IntegrationTask.exe &quot;Stop&quot; &quot;$(BizTalkAppName)&quot; &quot;$(Integration)&quot;"/>
+    <Exec Command="&quot;$(DeployTools)\IntegrationTask.exe&quot; &quot;Stop&quot; &quot;$(BizTalkAppName)&quot; &quot;$(Integration)&quot;"/>
     
     <!--
     <ControlBizTalkApp

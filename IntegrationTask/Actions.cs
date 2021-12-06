@@ -26,50 +26,50 @@ namespace IntegrationTask
 
                 Application application = catalog.Applications[applicationName];
 
-
-                foreach (ReceivePort port in application.ReceivePorts)
+                if (application != null)
                 {
-                    if (port.Name.StartsWith(integration))
+
+
+                    foreach (ReceivePort port in application.ReceivePorts)
                     {
-                        foreach (ReceiveLocation loc in port.ReceiveLocations)
+                        if (port.Name.StartsWith(integration))
                         {
-                            loc.Enable = startReceive;
+                            foreach (ReceiveLocation loc in port.ReceiveLocations)
+                            {
+                                loc.Enable = startReceive;
+                            }
                         }
                     }
-                }
 
-                foreach (SendPort port in application.SendPorts)
-                {
-                    if (port.Name.StartsWith(integration))
+                    foreach (SendPort port in application.SendPorts)
                     {
-                        port.Status = PortStatus.Started;
+                        if (port.Name.StartsWith(integration))
+                        {
+                            port.Status = PortStatus.Started;
+                        }
                     }
-                }
 
 
-                foreach (SendPortGroup port in application.SendPortGroups)
-                {
-                    if (port.Name.StartsWith(integration))
+                    foreach (SendPortGroup port in application.SendPortGroups)
                     {
-                        port.Status = PortStatus.Started;
+                        if (port.Name.StartsWith(integration))
+                        {
+                            port.Status = PortStatus.Started;
+                        }
                     }
-                }
 
-                foreach (BtsOrchestration inst in application.Orchestrations)
-                {
-                    if (inst.FullName.StartsWith(integration))
+                    foreach (BtsOrchestration inst in application.Orchestrations)
                     {
-                       
+                        if (inst.FullName.StartsWith(integration))
+                        {
 
-                        inst.Status = OrchestrationStatus.Started;
+
+                            inst.Status = OrchestrationStatus.Started;
+                        }
                     }
+
+                    catalog.SaveChanges();
                 }
-
-              
-
-
-
-                catalog.SaveChanges();
             }
         }
 

@@ -39,91 +39,65 @@ namespace IntegrationTask
 
             using (BtsCatalogExplorer catalog = GetCatalogExplorer())
             {
-              
+
                 Application application = catalog.Applications[applicationName];
 
-                BtsAssemblyCollection coll = application.Assemblies;
-
-
-                foreach (BtsAssembly ass in application.Assemblies)
-                {
-                   
-                    if (ass.DisplayName.StartsWith(integration) && ass.Orchestrations.Count > 0)
-                    {
-                        ProcessStartInfo psi = new ProcessStartInfo("BTSTask.exe", $"RemoveResource  /ApplicationName:{applicationName} /Server:{mgmtServer} /Database:{mgmtDbName} /Luid:\"{ass.DisplayName}\"");
-                        psi.UseShellExecute = false;
-                        psi.RedirectStandardError = false;
-                        psi.RedirectStandardInput = false;
-                        psi.RedirectStandardOutput = false;
-
-                        Process p = Process.Start(psi);
-
-                        p.WaitForExit();
-                    }
-                }
-
-                catalog.SaveChanges();
-
-                foreach (BtsAssembly ass in application.Assemblies)
+                if (application != null)
                 {
 
-                    if (ass.DisplayName.StartsWith(integration) && ass.Pipelines.Count > 0)
+                    if (application.Assemblies != null)
                     {
-                        ProcessStartInfo psi = new ProcessStartInfo("BTSTask.exe", $"RemoveResource  /ApplicationName:{applicationName} /Server:{mgmtServer} /Database:{mgmtDbName} /Luid:\"{ass.DisplayName}\"");
-                        psi.UseShellExecute = false;
-                        psi.RedirectStandardError = false;
-                        psi.RedirectStandardInput = false;
-                        psi.RedirectStandardOutput = false;
 
-                        Process p = Process.Start(psi);
+                        foreach (BtsAssembly ass in application.Assemblies)
+                        {
 
-                        p.WaitForExit();
+                            if (ass.DisplayName.StartsWith(integration) && ass.Orchestrations.Count > 0)
+                            {
+                                RemoveResource(applicationName, ass.DisplayName);
+                            }
+                        }
+
+                        catalog.SaveChanges();
+
+                        foreach (BtsAssembly ass in application.Assemblies)
+                        {
+
+                            if (ass.DisplayName.StartsWith(integration) && ass.Pipelines.Count > 0)
+                            {
+                                RemoveResource(applicationName, ass.DisplayName);
+                            }
+                        }
+
+                        catalog.SaveChanges();
+
+                        foreach (BtsAssembly ass in application.Assemblies)
+                        {
+
+                            if (ass.DisplayName.StartsWith(integration) && ass.Transforms.Count > 0)
+                            {
+                                RemoveResource(applicationName, ass.DisplayName);
+                            }
+                        }
+
+                        catalog.SaveChanges();
+
+                        foreach (BtsAssembly ass in application.Assemblies)
+                        {
+
+                            if (ass.DisplayName.StartsWith(integration) && ass.Schemas.Count > 0)
+                            {
+                                RemoveResource(applicationName, ass.DisplayName);
+                            }
+                        }
+
+                        catalog.SaveChanges();
+
                     }
                 }
-
-                catalog.SaveChanges();
-
-                foreach (BtsAssembly ass in application.Assemblies)
-                {
-
-                    if (ass.DisplayName.StartsWith(integration) && ass.Transforms.Count > 0)
-                    {
-                        ProcessStartInfo psi = new ProcessStartInfo("BTSTask.exe", $"RemoveResource  /ApplicationName:{applicationName} /Server:{mgmtServer} /Database:{mgmtDbName} /Luid:\"{ass.DisplayName}\"");
-                        psi.UseShellExecute = false;
-                        psi.RedirectStandardError = false;
-                        psi.RedirectStandardInput = false;
-                        psi.RedirectStandardOutput = false;
-
-                        Process p = Process.Start(psi);
-
-                        p.WaitForExit();
-                    }
-                }
-
-                catalog.SaveChanges();
-
-                foreach (BtsAssembly ass in application.Assemblies)
-                {
-
-                    if (ass.DisplayName.StartsWith(integration) && ass.Schemas.Count > 0)
-                    {
-                        ProcessStartInfo psi = new ProcessStartInfo("BTSTask.exe", $"RemoveResource  /ApplicationName:{applicationName} /Server:{mgmtServer} /Database:{mgmtDbName} /Luid:\"{ass.DisplayName}\"");
-                        psi.UseShellExecute = false;
-                        psi.RedirectStandardError = false;
-                        psi.RedirectStandardInput = false;
-                        psi.RedirectStandardOutput = false;
-
-                        Process p = Process.Start(psi);
-
-                        p.WaitForExit();
-                    }
-                }
-
-             
             }
 
-
         }
+
         public static void RemoveIntegration(string applicationName, string integration)
         {
 
@@ -131,38 +105,53 @@ namespace IntegrationTask
             {
                 Application application = catalog.Applications[applicationName];
 
-
-
-                foreach (ReceivePort port in application.ReceivePorts)
+                if (application != null)
                 {
-                    if (port.Name.StartsWith(integration))
+
+                    foreach (ReceivePort port in application.ReceivePorts)
                     {
-                        catalog.RemoveReceivePort(port);
+                        if (port.Name.StartsWith(integration))
+                        {
+                            catalog.RemoveReceivePort(port);
+                        }
                     }
-                }
 
-                foreach (SendPort port in application.SendPorts)
-                {
-                    if (port.Name.StartsWith(integration))
+                    foreach (SendPort port in application.SendPorts)
                     {
-                        catalog.RemoveSendPort(port);
+                        if (port.Name.StartsWith(integration))
+                        {
+                            catalog.RemoveSendPort(port);
+                        }
                     }
-                }
 
 
-                foreach (SendPortGroup port in application.SendPortGroups)
-                {
-                    if (port.Name.StartsWith(integration))
+                    foreach (SendPortGroup port in application.SendPortGroups)
                     {
-                        catalog.RemoveSendPortGroup(port);
+                        if (port.Name.StartsWith(integration))
+                        {
+                            catalog.RemoveSendPortGroup(port);
+                        }
                     }
+
+
+
+                    catalog.SaveChanges();
                 }
-
-
-
-                catalog.SaveChanges();
             }
         }
        
+        private static void RemoveResource(string applicationName,string assemblyName)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo("BTSTask.exe", $"RemoveResource  /ApplicationName:{applicationName} /Server:{mgmtServer} /Database:{mgmtDbName} /Luid:\"{assemblyName}\"");
+            psi.UseShellExecute = false;
+            psi.RedirectStandardError = false;
+            psi.RedirectStandardInput = false;
+            psi.RedirectStandardOutput = false;
+
+            
+            Process p = Process.Start(psi);
+
+            p.WaitForExit();
+        }
     }
 }
